@@ -101,28 +101,125 @@ class ViewController: UIViewController {
     // MARK: - Actions
     
     @objc func moveButtonTapped() {
+       
         
+        
+        
+        UIView.animate(withDuration: 1) {
+           self.label.center.y = 100
+          //  self.label.frame.size = CGSize(width: 300, height: 40)
+            //self.label.frame = CGRect(x: 200, y: 100, width: 80, height: 80)
+        }
+        
+        UIView.animate(withDuration: 1, animations: {
+            self.label.center.y = 100
+            self.label.alpha = 0.5
+        }) { (didFinish) in
+            UIView.animate(withDuration: 1) {
+                self.label.center.y = self.view.center.y
+                self.label.alpha = 1
+            }
+        }
     }
     
     @objc func rotateButtonTapped() {
+        
+        UIView.animate(withDuration: 1, animations: {
+            
+            self.label.transform = CGAffineTransform(rotationAngle: CGFloat.pi / 4).concatenating(CGAffineTransform(scaleX: 3, y: -0.2))
+            
+        }) { (_) in
+            
+            UIView.animate(withDuration: 1){
+                self.label.transform = .identity
+            }
+        }
+        
         
     }
     
     @objc func keyButtonTapped() {
         
+        UIView.animateKeyframes(withDuration: 4, delay: 0, options: [], animations: {
+            
+            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.25) {
+                self.label.transform = CGAffineTransform(rotationAngle: CGFloat.pi / 4)
+            }
+            
+            UIView.addKeyframe(withRelativeStartTime: 0.25, relativeDuration: 0.25){
+                self.label.transform = .identity
+            }
+            
+            UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.25) {
+                self.label.center.y -= 150
+            }
+            
+            UIView.addKeyframe(withRelativeStartTime: 0.75, relativeDuration: 0.25) {
+                self.label.center.y += 150
+            }
+            
+            UIView.addKeyframe(withRelativeStartTime: 0.1, relativeDuration: 0.4) {
+                self.label.alpha = 0
+            }
+            
+            UIView.addKeyframe(withRelativeStartTime: 0.6, relativeDuration: 0.4) {
+                self.label.alpha = 1
+            }
+            
+            
+            
+        }, completion: (nil))
+        
+        
+        
+        
     }
     
     @objc func springButtonTapped() {
         
+        
+        self.label.transform = CGAffineTransform(translationX: 0, y: -500)
+        
+        UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: [], animations: {
+            self.label.transform = .identity
+            
+        }, completion: nil)
+        
+        
+        
     }
     
     @objc func squashButtonTapped() {
+        
+        label.transform = .identity
+        
+        UIView.animate(withDuration: 1.5, delay: 0, options: [.curveEaseIn, .repeat, .allowUserInteraction], animations: {
+            
+            self.label.transform = CGAffineTransform(translationX: 0, y: -300)
+            
+            
+        }, completion: nil)
         
     }
     
     @objc func caBasicButtonTapped() {
         
         label.center = view.center
+        
+        let colorAnimation = CABasicAnimation(keyPath: #keyPath(CALayer.borderColor))
+        
+        colorAnimation.fromValue = label.layer.borderColor
+        
+        let color = randomColor()
+        
+        label.layer.borderColor = color
+        colorAnimation.toValue = color
+        colorAnimation.duration = 1
+        colorAnimation.timingFunction = CAMediaTimingFunction(name: .easeOut)
+        
+        label.layer.add(colorAnimation, forKey: "RandomColor")
+        
+        
     }
     
     private func randomColor() -> CGColor {
